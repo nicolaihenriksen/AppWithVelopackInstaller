@@ -3,6 +3,8 @@ using MaterialDesignThemes.Wpf;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+
 using System;
 using System.Threading.Tasks;
 using System.Windows;
@@ -42,7 +44,6 @@ public partial class App : Application
             => configurationBuilder.AddUserSecrets(typeof(App).Assembly))
         .ConfigureServices((hostContext, services) =>
         {
-            services.AddLogging();
             services.AddSingleton<MainWindow>();
             services.AddSingleton<MainWindowViewModel>();
 
@@ -56,5 +57,9 @@ public partial class App : Application
                 Dispatcher dispatcher = provider.GetRequiredService<Dispatcher>();
                 return new SnackbarMessageQueue(TimeSpan.FromSeconds(3.0), dispatcher);
             });
+        })
+        .ConfigureLogging((_, logging) =>
+        {
+            logging.SetMinimumLevel(LogLevel.Debug);
         });
 }
