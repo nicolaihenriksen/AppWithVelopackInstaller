@@ -16,6 +16,9 @@ defaults:
 env:
   version: "1.0.${{ github.run_number }}"
   
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: windows-latest
