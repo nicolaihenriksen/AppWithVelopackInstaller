@@ -23,6 +23,7 @@ public partial class App : Application
 
     private static async Task MainAsync(string[] args)
     {
+        Velopack.VelopackApp.Build().Run();
         using IHost host = CreateHostBuilder(args).Build();
         await host.StartAsync().ConfigureAwait(true);
 
@@ -41,6 +42,7 @@ public partial class App : Application
             => configurationBuilder.AddUserSecrets(typeof(App).Assembly))
         .ConfigureServices((hostContext, services) =>
         {
+            services.AddLogging();
             services.AddSingleton<MainWindow>();
             services.AddSingleton<MainWindowViewModel>();
 
