@@ -39,9 +39,9 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         run: |
           dotnet tool install -g vpk
-          vpk download github --repoUrl https://github.com/nicolaihenriksen/AppWithVelopackInstaller
+          vpk download github --repoUrl https://github.com/nicolaihenriksen/AppWithVelopackInstaller --token ${{ secrets.GITHUB_TOKEN }}
           vpk pack -u AppWithVelopackInstaller -v ${{ env.version }} -p ${{github.workspace}}/.build/publish
-          vpk upload github --repoUrl https://github.com/nicolaihenriksen/AppWithVelopackInstaller --publish --releaseName "AppWithVelopackInstaller ${{ env.version }}" --tag v${{ env.version }}
+          vpk upload github --repoUrl https://github.com/nicolaihenriksen/AppWithVelopackInstaller --publish --releaseName "AppWithVelopackInstaller ${{ env.version }}" --tag v${{ env.version }} --token ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload artifact for deployment job
         if: ${{ github.event_name != 'pull_request' }}
