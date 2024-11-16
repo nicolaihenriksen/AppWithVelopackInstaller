@@ -1,0 +1,43 @@
+name: Build AppWithVelopackInstaller
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: pwsh
+    
+env:
+  version: "1.0.${{ github.run_number }}"
+  
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: dotnet build
+        run: dotnet build --configuration Release -p:Version="${{ env.version }}"
+
+      - name: dotnet publish
+        if: ${{ github.event_name != 'pull_request' }}
+        run: dotnet publish --configuration Release --no-build -p:Version="${{ env.version }}" -p:PublishDir=${{github.workspace}}/.build/publish
+
+      - name: Upload artifact for deployment job
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: app
+          path: ${{github.workspace}}/.build/publish
