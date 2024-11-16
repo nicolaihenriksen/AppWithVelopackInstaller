@@ -33,7 +33,15 @@ jobs:
 
       - name: dotnet publish
         if: ${{ github.event_name != 'pull_request' }}
-        run: dotnet publish --configuration Release --no-build -p:Version="${{ env.version }}" -p:PublishDir=${{github.workspace}}/.build/publish
+        run: dotnet publish AppWithVelopackInstaller/AppWithVelopackInstaller.csproj --configuration Release --no-build -p:Version="${{ env.version }}" -p:UpdatePath=https://github.com/nicolaihenriksen/AppWithVelopackInstaller --self-contained -r win-x64 -o ${{github.workspace}}/.build/publish
+
+      - name: Create Velopack Release
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          dotnet tool install -g vpk
+          vpk download github --repoUrl https://github.com/nicolaihenriksen/AppWithVelopackInstaller
+          vpk pack -u AppWithVelopackInstaller -v ${{ env.version }} -p ${{github.workspace}}/.build/publish
+          vpk upload github --repoUrl https://github.com/nicolaihenriksen/AppWithVelopackInstaller --publish --releaseName "AppWithVelopackInstaller ${{ env.version }}" --tag v${{ env.version }}
 
       - name: Upload artifact for deployment job
         if: ${{ github.event_name != 'pull_request' }}
