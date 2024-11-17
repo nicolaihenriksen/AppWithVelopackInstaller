@@ -36,7 +36,7 @@ jobs:
 
       - name: dotnet publish
         if: ${{ github.event_name != 'pull_request' }}
-        run: dotnet publish AppWithVelopackInstaller/AppWithVelopackInstaller.csproj --configuration Release --no-build -p:Version="${{ env.version }}" -p:UpdatePath=https://github.com/nicolaihenriksen/AppWithVelopackInstaller --self-contained -r win-x64 -o ${{github.workspace}}/.build/publish
+        run: dotnet publish AppWithVelopackInstaller/AppWithVelopackInstaller.csproj --configuration Release -p:Version="${{ env.version }}" -p:UpdatePath=https://github.com/nicolaihenriksen/AppWithVelopackInstaller -o ${{github.workspace}}/.build/publish
 
       - name: Create Velopack Release
         if: ${{ github.event_name != 'pull_request' }}
