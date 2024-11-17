@@ -48,8 +48,7 @@ jobs:
           draft: false
           prerelease: false
           release_name: ${{ env.version }}
-          tag_name: ${{ github.ref }}
-          body_path: CHANGELOG.md
+          tag_name: ${{ env.version }}
 
       - name: Upload release artifact
         if: ${{ github.event_name != 'pull_request' }}
