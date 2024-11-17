@@ -38,25 +38,11 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         run: ./publish.ps1 -Version ${{ env.version }}
 
-      - name: Prepare release
+      - name: Create release
         if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/create-release@v1.1.4
-        id: create_release
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
+        uses: ncipollo/release-action@v1.14.0
         with:
-          draft: false
-          prerelease: false
-          release_name: ${{ env.version }}
-          tag_name: ${{ env.version }}
-
-      - name: Upload release artifact
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./publish/*
-          asset_name: artifacts.zip
-          asset_content_type: application/zip
+          artifacts: "publish/*"
+          body: "Release ${{ env.version }}"
+          tag: "v${{ env.version }}"
+          commit: ${{ github.sha }}
