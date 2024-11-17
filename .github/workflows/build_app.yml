@@ -31,25 +31,33 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: dotnet build
+      - name: Build
         run: dotnet build --configuration Release -p:Version="${{ env.version }}"
 
-      - name: dotnet publish
+      - name: Publish
         if: ${{ github.event_name != 'pull_request' }}
-        run: dotnet publish AppWithVelopackInstaller/AppWithVelopackInstaller.csproj --configuration Release -p:Version="${{ env.version }}" -p:UpdatePath=https://github.com/nicolaihenriksen/AppWithVelopackInstaller -o ${{github.workspace}}/.build/publish
+        run: ./publish.ps1 -Version ${{ env.version }}
 
-      - name: Create Velopack Release
+      - name: Prepare release
         if: ${{ github.event_name != 'pull_request' }}
-        run: |
-          dotnet tool install -g vpk
-          vpk download github --repoUrl https://github.com/nicolaihenriksen/AppWithVelopackInstaller --token ${{ secrets.GITHUB_TOKEN }}
-          vpk pack -u AppWithVelopackInstaller -v ${{ env.version }} -p ${{github.workspace}}/.build/publish
-          vpk upload github --repoUrl https://github.com/nicolaihenriksen/AppWithVelopackInstaller --publish --releaseName "AppWithVelopackInstaller ${{ env.version }}" --tag v${{ env.version }} --token ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload artifact for deployment job
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: actions/upload-artifact@v4
+        uses: actions/create-release@v1.1.4
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
         with:
-          name: app
-          path: ${{github.workspace}}/.build/publish
-          retention-days: 1
+          draft: false
+          prerelease: false
+          release_name: ${{ env.version }}
+          tag_name: ${{ github.ref }}
+          body_path: CHANGELOG.md
+
+      - name: Upload release artifact
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./publish/*
+          asset_name: artifacts.zip
+          asset_content_type: application/zip
