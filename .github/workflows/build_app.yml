@@ -42,7 +42,7 @@ jobs:
         if: ${{ github.event_name != 'pull_request' }}
         uses: ncipollo/release-action@v1.14.0
         with:
-          artifacts: "publish/*"
+          artifacts: "ReleaseArtifact.zip"
           body: "Release ${{ env.version }}"
           tag: "v${{ env.version }}"
           commit: ${{ github.sha }}
