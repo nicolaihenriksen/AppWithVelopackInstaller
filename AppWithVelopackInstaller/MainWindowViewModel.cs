@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -8,6 +6,7 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 using Velopack;
 using Velopack.Locators;
@@ -18,11 +17,13 @@ public partial class MainWindowViewModel : ObservableObject
 {
     public string AppVersion { get; } = typeof(MainWindowViewModel).Assembly.GetName().Version.ToString();
 
+    private readonly IOptions<VelopackSettings> _velopackSettings;
     private readonly ILogger<MainWindowViewModel> _logger;
     private readonly ILogger<UpdateManager> _umLogger;
 
-    public MainWindowViewModel(ILogger<MainWindowViewModel> logger, ILogger<UpdateManager> umLogger)
+    public MainWindowViewModel(IOptions<VelopackSettings> velopackSettings, ILogger<MainWindowViewModel> logger, ILogger<UpdateManager> umLogger)
     {
+        _velopackSettings = velopackSettings;
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         _umLogger = umLogger ?? throw new ArgumentNullException(nameof(umLogger)); ;
     }
@@ -30,7 +31,7 @@ public partial class MainWindowViewModel : ObservableObject
     [RelayCommand]
     private async Task CheckForUpdatesAsync()
     {
-        string updatePath = GetType().Assembly.GetCustomAttributes<AssemblyMetadataAttribute>().Single(a => a.Key == "UpdatePath").Value;
+        string updatePath = _velopackSettings.Value.UpdatePath;
 
         // Check for updates
         IVelopackLocator locator = null;

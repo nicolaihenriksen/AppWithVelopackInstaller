@@ -17,17 +17,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="InstallerOutput\**" />
-    <Compile Remove="publish\**" />
-    <EmbeddedResource Remove="InstallerOutput\**" />
-    <EmbeddedResource Remove="publish\**" />
-    <None Remove="InstallerOutput\**" />
-    <None Remove="publish\**" />
-    <Page Remove="InstallerOutput\**" />
-    <Page Remove="publish\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ApplicationDefinition Remove="App.xaml" />
     <Page Include="App.xaml" />
   </ItemGroup>
@@ -40,14 +29,10 @@
     <PackageReference Include="Velopack" />
   </ItemGroup>
 
-  <PropertyGroup>
-    <UpdatePath>..\..\..\..\InstallerOutput</UpdatePath>
-  </PropertyGroup>
   <ItemGroup>
-    <AssemblyAttribute Include="System.Reflection.AssemblyMetadataAttribute">
-      <_Parameter1>UpdatePath</_Parameter1>
-      <_Parameter2>$(UpdatePath)</_Parameter2>
-    </AssemblyAttribute>
+    <None Update="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
-  
+
 </Project>

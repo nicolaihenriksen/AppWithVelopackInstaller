@@ -9,6 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 		Directory.Packages.props = Directory.Packages.props
 		NuGet.config = NuGet.config
+		publish.ps1 = publish.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{EF62C430-6899-4C85-BFFC-D71632937A3B}"

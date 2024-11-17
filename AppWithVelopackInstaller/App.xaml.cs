@@ -40,10 +40,15 @@ public partial class App : Application
 
     public static IHostBuilder CreateHostBuilder(string[] args) =>
         Host.CreateDefaultBuilder(args)
-        .ConfigureAppConfiguration((hostBuilderContext, configurationBuilder)
-            => configurationBuilder.AddUserSecrets(typeof(App).Assembly))
+        .ConfigureAppConfiguration((hostBuilderContext, configurationBuilder) =>
+        {
+            configurationBuilder.AddJsonFile("appsettings.json");
+            configurationBuilder.AddUserSecrets(typeof(App).Assembly);
+        })
         .ConfigureServices((hostContext, services) =>
         {
+            services.Configure<VelopackSettings>(hostContext.Configuration.GetSection("Velopack"));
+
             services.AddSingleton<MainWindow>();
             services.AddSingleton<MainWindowViewModel>();
 
