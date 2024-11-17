@@ -481,6 +481,3 @@ $RECYCLE.BIN/
 
 # Ignore live unit testing config
 *.lutconfig 
-
-# ZIP files
-*.zip
