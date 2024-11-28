@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -32,6 +33,15 @@ public partial class MainWindowViewModel : ObservableObject
     private async Task CheckForUpdatesAsync()
     {
         string updatePath = _velopackSettings.Value.UpdatePath;
+
+        if (Uri.TryCreate(updatePath, UriKind.Absolute, out var uri))
+        {
+            var query = HttpUtility.ParseQueryString(uri.Query);
+            query["app"] = VelopackLocator.GetDefault(_umLogger).AppId;
+            var builder = new UriBuilder(uri);
+            builder.Query = query.ToString();
+            updatePath = builder.Uri.ToString();
+        }
 
         // Check for updates
         IVelopackLocator locator = null;
